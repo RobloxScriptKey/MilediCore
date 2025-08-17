@@ -3,6 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 -- Удаляем старый GUI
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
@@ -35,7 +36,7 @@ gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 400, 0, 300)
+frame.Size = UDim2.new(0, 0, 0, 0) -- начнем с 0 для анимации
 frame.Position = UDim2.new(0.5, 0, 0.4, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
@@ -86,10 +87,27 @@ feedback.TextColor3 = Color3.new(1, 1, 1)
 feedback.Font = Enum.Font.Gotham
 feedback.TextSize = 18
 
+-- Кнопка копирования ссылки
+local getKeyButton = Instance.new("TextButton", frame)
+getKeyButton.Size = UDim2.new(0.8, 0, 0, 36)
+getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(180, 220, 255)
+getKeyButton.Font = Enum.Font.GothamBold
+getKeyButton.TextSize = 18
+getKeyButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+getKeyButton.Text = "Получить ключ"
+Instance.new("UICorner", getKeyButton).CornerRadius = UDim.new(0, 12)
+
+getKeyButton.MouseButton1Click:Connect(function()
+    setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
+    feedback.Text = "✅ Ссылка скопирована!"
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+end)
+
 -- Прогресс-бар
 local progressBackground = Instance.new("Frame", frame)
 progressBackground.Size = UDim2.new(0.8, 0, 0, 20)
-progressBackground.Position = UDim2.new(0.1, 0, 0, 210)
+progressBackground.Position = UDim2.new(0.1, 0, 0, 260)
 progressBackground.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
 Instance.new("UICorner", progressBackground).CornerRadius = UDim.new(0, 10)
 
@@ -114,23 +132,16 @@ local function runHiddenScript()
     end
 end
 
--- Анимация прогресс-бара
-local function fillProgressBar()
-    local duration = 2
-    local startTime = tick()
-    local connection
-    connection = RunService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local pct = math.clamp(elapsed / duration, 0, 1)
-        local smoothPct = 0.5 - 0.5 * math.cos(pct * math.pi)
-        progressBar.Size = UDim2.new(smoothPct, 0, 1, 0)
-        if pct >= 1 then
-            connection:Disconnect()
-            gui:Destroy()
-            runHiddenScript()
-        end
-    end)
+-- Анимации GUI
+local function tweenIn(instance, duration, targetSize, targetPos)
+    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local sizeTween = TweenService:Create(instance, tweenInfo, {Size = targetSize})
+    local posTween = TweenService:Create(instance, tweenInfo, {Position = targetPos})
+    sizeTween:Play()
+    posTween:Play()
 end
+
+tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320), frame.Position)
 
 -- Пульсация кнопки
 local function pulseButton(btn)
@@ -141,21 +152,35 @@ end
 pulseButton(button)
 
 -- Пульсация заголовка
-local function pulseText(lbl)
-    RunService.RenderStepped:Connect(function()
-        local scale = 1 + 0.05 * math.sin(tick() * 3)
-        lbl.TextSize = 22 * scale
-    end)
-end
-pulseText(title)
+RunService.RenderStepped:Connect(function()
+    local scale = 1 + 0.05 * math.sin(tick() * 3)
+    title.TextSize = 22 * scale
+end)
 
--- Эффект печатающегося текста
-local function typeText(lbl, text)
+-- Эффект «печатающегося» текста
+local function typeText(lbl, txt)
     lbl.Text = ""
     spawn(function()
-        for i = 1, #text do
-            lbl.Text = text:sub(1, i)
+        for i = 1, #txt do
+            lbl.Text = string.sub(txt,1,i)
             wait(0.03)
+        end
+    end)
+end
+
+-- Прогресс-бар
+local function fillProgressBar()
+    local duration = 2
+    local startTime = tick()
+    local conn
+    conn = RunService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local pct = math.clamp(elapsed / duration, 0, 1)
+        progressBar.Size = UDim2.new(pct, 0, 1, 0)
+        if pct >= 1 then
+            conn:Disconnect()
+            gui:Destroy()
+            runHiddenScript()
         end
     end)
 end
