@@ -1,3 +1,4 @@
+
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
@@ -122,6 +123,9 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
+-- Обфуцированная ссылка
+local scriptURL = string.char(104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 115, 116, 46, 103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 85, 67, 84, 45, 104, 117, 98, 47, 53, 98, 49, 49, 100, 49, 48, 51, 56, 102, 49, 98, 56, 99, 101, 48, 56, 102, 101, 98, 56, 48, 47, 103, 105, 115, 116, 102, 105, 108, 101, 49, 46, 116, 120, 116)
+
 -- Проверка ключа и запуск скрипта
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
@@ -147,7 +151,7 @@ button.MouseButton1Click:Connect(function()
 
                 -- Загружаем и выполняем скрипт
                 local success, err = pcall(function()
-                    local scriptContent = game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt")
+                    local scriptContent = game:HttpGet(scriptURL)
                     assert(scriptContent, "Скрипт не загружен")
                     loadstring(scriptContent)() -- Выполняем скрипт
                 end)
@@ -163,8 +167,4 @@ button.MouseButton1Click:Connect(function()
 end)
 
 getKeyButton.MouseButton1Click:Connect(function()
-    local url = "https://playerok.com/profile/MILEDI-STORE/products"
-    setclipboard(url)
-    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
-    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-end)
+    local url = "https://playerok.com/profile/MILEDI-STORE/products
