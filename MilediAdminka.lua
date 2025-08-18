@@ -156,20 +156,4 @@ button.MouseButton1Click:Connect(function()
                     assert(scriptContent, "Скрипт не загружен")
                     loadstring(scriptContent)()
                 end)
-                if not success then
-                    warn("Ошибка при выполнении скрипта: "..tostring(err))
-                end
-            end
-        end)
-    else
-        feedback.Text = "❌ Неверный ключ"
-        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
-    end
-end)
-
-getKeyButton.MouseButton1Click:Connect(function()
-    local url = "https://playerok.com/profile/MILEDI-STORE/products"
-    setclipboard(url)
-    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
-    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-end)
+                if not
