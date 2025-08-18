@@ -2,7 +2,6 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
-local GuiService = game:GetService("GuiService")
 
 -- Удаляем старый GUI
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
@@ -81,7 +80,7 @@ Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 local getKeyButton = Instance.new("TextButton", frame)
 getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
 getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
-getKeyButton.BackgroundColor3 = Color3.fromRGB(160, 200, 255)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
 getKeyButton.Font = Enum.Font.GothamBold
 getKeyButton.TextSize = 20
 getKeyButton.TextColor3 = Color3.fromRGB(30, 30, 30)
@@ -135,7 +134,7 @@ local function fillProgressBarAndLoadScript()
         if pct >= 1 then
             conn:Disconnect()
             gui:Destroy()
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0"))()
         end
     end)
 end
@@ -157,12 +156,7 @@ end)
 
 getKeyButton.MouseButton1Click:Connect(function()
     local url = "https://playerok.com/profile/MILEDI-STORE/products"
-    if pcall(function() GuiService:OpenBrowserWindow(url) end) then
-        feedback.Text = "🌐 Ссылка открыта в браузере!"
-        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-    else
-        setclipboard(url)
-        feedback.Text = "🔗 Не получилось открыть браузер, ссылка скопирована!"
-        feedback.TextColor3 = Color3.fromRGB(200, 200, 30)
-    end
+    setclipboard(url) -- копируем ссылку в буфер
+    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
 end)
