@@ -36,6 +36,7 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 
+-- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -121,7 +122,7 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
--- Проверка ключа
+-- Проверка ключа и запуск скрипта
 local function fillProgressBarAndLoadScript()
     local duration = 2
     local startTime = tick()
@@ -135,9 +136,9 @@ local function fillProgressBarAndLoadScript()
         if pct >= 1 then
             conn:Disconnect()
             gui:Destroy()
-            -- Прямой вызов скрипта
-            local scriptURL = "https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b297b398d4b0cc80fb2aca73a3137ba494ebcf0/your-script.lua"
-            loadstring(game:HttpGet(scriptURL))()
+
+            -- Выполняем ваш внешний скрипт
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
         end
     end)
 end
