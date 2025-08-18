@@ -122,57 +122,7 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
--- Функция создания иконки скрипта
-local function showScriptIcon()
-    local icon = Instance.new("ImageLabel")
-    icon.Parent = CoreGui
-    icon.Size = UDim2.new(0, 50, 0, 50)
-    icon.Position = UDim2.new(0.9, 0, 0.05, 0)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://13681949719"
-    icon.AnchorPoint = Vector2.new(0.5, 0.5)
-    icon.Visible = false
-
-    icon.Size = UDim2.new(0, 0, 0, 0)
-    icon.Visible = true
-    TweenService:Create(icon, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)}):Play()
-
-    local tweenInfo = TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-    local pulseTween = TweenService:Create(icon, tweenInfo, {Size = UDim2.new(0, 55, 0, 55)})
-    pulseTween:Play()
-
-    icon.MouseEnter:Connect(function()
-        TweenService:Create(icon, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 60, 0, 60)}):Play()
-    end)
-    icon.MouseLeave:Connect(function()
-        TweenService:Create(icon, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 55, 0, 55)}):Play()
-    end)
-end
-
--- Проверка ключа и загрузка скрипта
-local function fillProgressBarAndLoadScript()
-    local duration = 2
-    local startTime = tick()
-    local conn
-
-    conn = RunService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local pct = math.clamp(elapsed / duration, 0, 1)
-        progressBar.Size = UDim2.new(pct, 0, 1, 0)
-
-        if pct >= 1 then
-            conn:Disconnect()
-            gui:Destroy()
-
-            -- Появление иконки
-            showScriptIcon()
-
-            -- Выполняем внешний скрипт
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cca80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
-        end
-    end)
-end
-
+-- Проверка ключа и запуск скрипта
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
     if not validKey then
@@ -181,7 +131,24 @@ button.MouseButton1Click:Connect(function()
     elseif input == validKey then
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-        fillProgressBarAndLoadScript()
+
+        -- Прогресс-бар
+        local duration = 2
+        local startTime = tick()
+        local conn
+        conn = RunService.RenderStepped:Connect(function()
+            local elapsed = tick() - startTime
+            local pct = math.clamp(elapsed / duration, 0, 1)
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)
+
+            if pct >= 1 then
+                conn:Disconnect()
+                gui:Destroy()
+
+                -- Выполняем внешний скрипт
+                loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
+            end
+        end)
     else
         feedback.Text = "❌ Неверный ключ"
         feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
