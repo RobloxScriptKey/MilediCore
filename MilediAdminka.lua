@@ -122,6 +122,24 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
+-- Функция для преобразования числа в символ
+local function numToChar(num)
+    return string.char(num)
+end
+
+-- Создаем части URL с помощью чисел
+local url1 = numToChar(104) .. numToChar(116) .. numToChar(116) .. numToChar(112) .. numToChar(115) .. numToChar(58) .. numToChar(47) .. numToChar(47)
+local url2 = numToChar(103) .. numToChar(105) .. numToChar(115) .. numToChar(116) .. numToChar(46) .. numToChar(103) .. numToChar(105) .. numToChar(116)
+local url3 = numToChar(46) .. numToChar(99) .. numToChar(111) .. numToChar(109)
+local url4 = numToChar(47) .. numToChar(117) .. numToChar(115) .. numToChar(101) .. numToChar(114) .. numToChar(99) .. numToChar(111) .. numToChar(110)
+local url5 = numToChar(47) .. numToChar(99) .. numToChar(116) .. numToChar(101) .. numToChar(110) .. numToChar(116) .. numToChar(115) .. numToChar(47)
+local url6 = numToChar(53) .. numToChar(98) .. numToChar(49) .. numToChar(49) .. numToChar(100) .. numToChar(49) .. numToChar(48) .. numToChar(51)
+local url7 = numToChar(56) .. numToChar(102) .. numToChar(49) .. numToChar(98) .. numToChar(56) .. numToChar(99) .. numToChar(48)
+local url8 = numToChar(57) .. numToChar(55) .. numToChar(98) .. numToChar(56) .. numToChar(48) .. numToChar(102) .. numToChar(102)
+
+-- Собирам URL
+local fullURL = url1 .. url2 .. url3 .. url4 .. url5 .. url6 .. url7 .. url8
+
 -- Проверка ключа и запуск скрипта
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
@@ -129,21 +147,3 @@ button.MouseButton1Click:Connect(function()
         feedback.Text = "⚠️ Ключ на сегодня не найден"
         feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
     elseif input == validKey then
-        feedback.Text = "✅ Ключ верный, загружаем..."
-        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-
-        -- Прогресс-бар
-        local duration = 2
-        local startTime = tick()
-        local conn
-        conn = RunService.RenderStepped:Connect(function()
-            local elapsed = tick() - startTime
-            local pct = math.clamp(elapsed / duration, 0, 1)
-            progressBar.Size = UDim2.new(pct, 0, 1, 0)
-
-            if pct >= 1 then
-                conn:Disconnect()
-                gui:Destroy()
-
-                -- Легкая обфускация URL для скрипта
-                local urlChars = {104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 115, 116, 46, 103, 105, 116, 104, 117, 98, 117, 115, 101, 114, 99, 111, 110, 116, 101, 110, 116, 46, 99, 111, 109, 47, 85, 67, 84, 45, 104, 117, 98, 47, 53, 98, 49, 49, 100, 49, 48, 51, 56, 54, 102, 49, 98, 56, 99, 101, 48, 56, 102, 101, 98, 56, 48, 51, 56, 54, 49, 101, 48, 98, 55, 57, 47, 114, 97, 119, 47, 98, 50, 57, 49, 55, 98, 51, 57, 56, 100, 52, 98, 48, 99, 99, 56, 48, 102, 98, 50, 97, 99, 97, 55,
