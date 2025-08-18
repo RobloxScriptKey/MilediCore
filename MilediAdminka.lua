@@ -1,23 +1,19 @@
--- Сервисы
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local HttpService = game:GetService("HttpService")
+local GuiService = game:GetService("GuiService")
 
 -- Удаляем старый GUI
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
 if oldGui then oldGui:Destroy() end
 
--- Загружаем ключи с GitHub
+-- Загружаем ключи
 local keysURL = "https://raw.githubusercontent.com/RobloxScriptKey/MilediKeys-/main/MILEDI-keys.json"
-local keys = {}
 local success, response = pcall(function() return game:HttpGet(keysURL) end)
-if success then
-    local decodeSuccess, decoded = pcall(HttpService.JSONDecode, HttpService, response)
-    if decodeSuccess then keys = decoded end
-end
+local keys = {}
+if success then keys = HttpService:JSONDecode(response) end
 
--- Сегодняшний ключ
 local today = os.date("%Y-%m-%d")
 local todayKeyTable = keys[today]
 local validKey = nil
@@ -34,14 +30,14 @@ gui.Name = "PlayerokKeyGui"
 gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
-local frame = Instance.new("Frame")
+local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 0, 0, 0)
 frame.Position = UDim2.new(0.5, 0, 0.4, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
-frame.Parent = gui
 
+-- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -81,6 +77,17 @@ button.TextColor3 = Color3.fromRGB(30, 30, 30)
 button.Text = "Проверить"
 Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 
+-- Кнопка "Получить ключ"
+local getKeyButton = Instance.new("TextButton", frame)
+getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
+getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(160, 200, 255)
+getKeyButton.Font = Enum.Font.GothamBold
+getKeyButton.TextSize = 20
+getKeyButton.TextColor3 = Color3.fromRGB(30, 30, 30)
+getKeyButton.Text = "Получить ключ"
+Instance.new("UICorner", getKeyButton).CornerRadius = UDim.new(0, 12)
+
 -- Подсказки
 local feedback = Instance.new("TextLabel", frame)
 feedback.Size = UDim2.new(1, 0, 0, 20)
@@ -114,9 +121,10 @@ local function pulseButton(btn)
     TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)}):Play()
 end
 pulseButton(button)
+pulseButton(getKeyButton)
 
--- Проверка ключа и запуск скрипта
-local function fillProgressBarAndLoadScript(url)
+-- Проверка ключа
+local function fillProgressBarAndLoadScript()
     local duration = 2
     local startTime = tick()
     local conn
@@ -127,13 +135,7 @@ local function fillProgressBarAndLoadScript(url)
         if pct >= 1 then
             conn:Disconnect()
             gui:Destroy()
-            -- Попытка загрузить скрипт
-            local ok, err = pcall(function()
-                loadstring(game:HttpGet(url))()
-            end)
-            if not ok then
-                warn("Ошибка при запуске скрипта: ", err)
-            end
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
         end
     end)
 end
@@ -146,9 +148,21 @@ button.MouseButton1Click:Connect(function()
     elseif input == validKey then
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-        fillProgressBarAndLoadScript("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt")
+        fillProgressBarAndLoadScript()
     else
         feedback.Text = "❌ Неверный ключ"
         feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
+    end
+end)
+
+getKeyButton.MouseButton1Click:Connect(function()
+    local url = "https://playerok.com/profile/MILEDI-STORE/products"
+    if pcall(function() GuiService:OpenBrowserWindow(url) end) then
+        feedback.Text = "🌐 Ссылка открыта в браузере!"
+        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+    else
+        setclipboard(url)
+        feedback.Text = "🔗 Не получилось открыть браузер, ссылка скопирована!"
+        feedback.TextColor3 = Color3.fromRGB(200, 200, 30)
     end
 end)
