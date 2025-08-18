@@ -36,7 +36,6 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 
--- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -136,18 +135,9 @@ local function fillProgressBarAndLoadScript()
         if pct >= 1 then
             conn:Disconnect()
             gui:Destroy()
-
-            -- Скрытая ссылка в числах
-            local codes = {104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,46,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,51,49,51,55,98,97,52,57,52,101,98,99,102,48}
-            local url = table.concat((function()
-                local t = {}
-                for i=1,#codes do
-                    t[i] = string.char(codes[i])
-                end
-                return t
-            end)())
-            
-            loadstring(game:HttpGet(url))()
+            -- Прямой вызов скрипта
+            local scriptURL = "https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b297b398d4b0cc80fb2aca73a3137ba494ebcf0/your-script.lua"
+            loadstring(game:HttpGet(scriptURL))()
         end
     end)
 end
