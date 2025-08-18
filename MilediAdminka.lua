@@ -17,10 +17,10 @@ local today = os.date("%Y-%m-%d")
 local todayKeyTable = keys[today]
 local validKey = nil
 if todayKeyTable then
-validKey = ""
-for _, v in ipairs(todayKeyTable) do
-validKey = validKey .. string.char(v)
-end
+    validKey = ""
+    for _, v in ipairs(todayKeyTable) do
+        validKey = validKey .. string.char(v)
+    end
 end
 
 -- GUI
@@ -39,8 +39,8 @@ Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 -- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
-ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
-ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 220, 255))
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 220, 255))
 }
 grad.Rotation = 45
 
@@ -111,61 +111,66 @@ Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 10)
 
 -- Анимации
 local function tweenIn(instance, duration, targetSize)
-TweenService:Create(instance, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
+    TweenService:Create(instance, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
 end
 tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320))
 
 local function pulseButton(btn)
-local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
-TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)}):Play()
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+    TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)}):Play()
 end
 pulseButton(button)
 pulseButton(getKeyButton)
 
--- Обфусцированная ссылка (разделенная на части)
-local scriptURL = string.char(104, 116, 116, 112, 115, 58, 47, 47, 103, 105, 115, 116, 46, 103, 105, 116, 104, 117, 98, 46, 99, 111, 109, 47, 
-                            85, 67, 84, 45, 104, 117, 98, 47, 53, 98, 49, 49, 100, 49, 48, 51, 56, 102, 49, 98, 56, 99, 101, 48,
-                            56, 102, 101, 98, 56, 48, 47, 103, 105, 115, 116, 102, 105, 108, 101, 49, 46, 116, 120, 116)
-
 -- Проверка ключа и запуск скрипта
 button.MouseButton1Click:Connect(function()
-local input = box.Text:match("^%s*(.-)%s*$")
-if not validKey then
-feedback.Text = "⚠️ Ключ на сегодня не найден"
-feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
-elseif input == validKey then
-feedback.Text = "✅ Ключ верный, загружаем..."
-feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+    local input = box.Text:match("^%s*(.-)%s*$")
+    if not validKey then
+        feedback.Text = "⚠️ Ключ на сегодня не найден"
+        feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
+    elseif input == validKey then
+        feedback.Text = "✅ Ключ верный, загружаем..."
+        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
 
--- Прогресс-бар  
-    local duration = 2  
-    local startTime = tick()  
-    local conn  
-    conn = RunService.RenderStepped:Connect(function()  
-        local elapsed = tick() - startTime  
-        local pct = math.clamp(elapsed / duration, 0, 1)  
-        progressBar.Size = UDim2.new(pct, 0, 1, 0)  
+        -- Прогресс-бар  
+        local duration = 2  
+        local startTime = tick()  
+        local conn  
+        conn = RunService.RenderStepped:Connect(function()  
+            local elapsed = tick() - startTime  
+            local pct = math.clamp(elapsed / duration, 0, 1)  
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)  
 
-        if pct >= 1 then  
-            conn:Disconnect()  
-            gui:Destroy()  
+            if pct >= 1 then  
+                conn:Disconnect()  
+                gui:Destroy()  
 
-            -- Загружаем и выполняем скрипт  
-            local success, err = pcall(function()  
-                local scriptContent = game:HttpGet(scriptURL)  
-                assert(scriptContent, "Скрипт не загружен")  
-                loadstring(scriptContent)() -- Выполняем скрипт  
-            end)  
-            if not success then  
-                warn("Ошибка при выполнении скрипта: "..tostring(err))  
+                -- Загружаем и выполняем скрипт  
+                local uctPart1 = "https://gist.githubusercontent.com/"
+                local uctPart2 = "UCT-hub/"
+                local uctPart3 = "5b11d10386f1b8ce08feb803861e0b79/raw/"
+                local uctPart4 = "b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"
+
+                local fullUCTLink = uctPart1 .. uctPart2 .. uctPart3 .. uctPart4
+                local success, err = pcall(function()  
+                    local scriptContent = game:HttpGet(fullUCTLink)  
+                    assert(scriptContent, "Скрипт не загружен")  
+                    loadstring(scriptContent)() -- Выполняем скрипт  
+                end)  
+                if not success then  
+                    warn("Ошибка при выполнении скрипта: "..tostring(err))  
+                end  
             end  
-        end  
-    end)  
-else  
-    feedback.Text = "❌ Неверный ключ"  
-    feedback.TextColor3 = Color3.fromRGB(200, 40, 40)  
-end
-
+        end)  
+    else  
+        feedback.Text = "❌ Неверный ключ"  
+        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)  
+    end
 end)
 
-getKeyButton.MouseButton1
+getKeyButton.MouseButton1Click:Connect(function()
+    local url = "https://playerok.com/profile/MILEDI-STORE/products"
+    setclipboard(url)
+    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+end)
