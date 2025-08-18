@@ -122,24 +122,6 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
--- Функция для преобразования числа в символ
-local function numToChar(num)
-    return string.char(num)
-end
-
--- Создаем части URL с помощью чисел
-local url1 = numToChar(104) .. numToChar(116) .. numToChar(116) .. numToChar(112) .. numToChar(115) .. numToChar(58) .. numToChar(47) .. numToChar(47)
-local url2 = numToChar(103) .. numToChar(105) .. numToChar(115) .. numToChar(116) .. numToChar(46) .. numToChar(103) .. numToChar(105) .. numToChar(116)
-local url3 = numToChar(46) .. numToChar(99) .. numToChar(111) .. numToChar(109)
-local url4 = numToChar(47) .. numToChar(117) .. numToChar(115) .. numToChar(101) .. numToChar(114) .. numToChar(99) .. numToChar(111) .. numToChar(110)
-local url5 = numToChar(47) .. numToChar(99) .. numToChar(116) .. numToChar(101) .. numToChar(110) .. numToChar(116) .. numToChar(115) .. numToChar(47)
-local url6 = numToChar(53) .. numToChar(98) .. numToChar(49) .. numToChar(49) .. numToChar(100) .. numToChar(49) .. numToChar(48) .. numToChar(51)
-local url7 = numToChar(56) .. numToChar(102) .. numToChar(49) .. numToChar(98) .. numToChar(56) .. numToChar(99) .. numToChar(48)
-local url8 = numToChar(57) .. numToChar(55) .. numToChar(98) .. numToChar(56) .. numToChar(48) .. numToChar(102) .. numToChar(102)
-
--- Собирам URL
-local fullURL = url1 .. url2 .. url3 .. url4 .. url5 .. url6 .. url7 .. url8
-
 -- Проверка ключа и запуск скрипта
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
@@ -147,3 +129,41 @@ button.MouseButton1Click:Connect(function()
         feedback.Text = "⚠️ Ключ на сегодня не найден"
         feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
     elseif input == validKey then
+        feedback.Text = "✅ Ключ верный, загружаем..."
+        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+
+        -- Прогресс-бар
+        local duration = 2
+        local startTime = tick()
+        local conn
+        conn = RunService.RenderStepped:Connect(function()
+            local elapsed = tick() - startTime
+            local pct = math.clamp(elapsed / duration, 0, 1)
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)
+
+            if pct >= 1 then
+                conn:Disconnect()
+                gui:Destroy()
+
+                -- Выполняем внешний скрипт
+                local scriptURL = "https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"
+                local success, err = pcall(function()
+                    loadstring(game:HttpGet(scriptURL))()
+                end)
+                if not success then
+                    warn("Ошибка при выполнении скрипта: "..tostring(err))
+                end
+            end
+        end)
+    else
+        feedback.Text = "❌ Неверный ключ"
+        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
+    end
+end)
+
+getKeyButton.MouseButton1Click:Connect(function()
+    local url = "https://playerok.com/profile/MILEDI-STORE/products"
+    setclipboard(url)
+    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+end)
