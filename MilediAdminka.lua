@@ -1,3 +1,4 @@
+-- Сервисы
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
@@ -7,12 +8,16 @@ local HttpService = game:GetService("HttpService")
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
 if oldGui then oldGui:Destroy() end
 
--- Загружаем ключи
+-- Загружаем ключи с GitHub
 local keysURL = "https://raw.githubusercontent.com/RobloxScriptKey/MilediKeys-/main/MILEDI-keys.json"
-local success, response = pcall(function() return game:HttpGet(keysURL) end)
 local keys = {}
-if success then keys = HttpService:JSONDecode(response) end
+local success, response = pcall(function() return game:HttpGet(keysURL) end)
+if success then
+    local decodeSuccess, decoded = pcall(HttpService.JSONDecode, HttpService, response)
+    if decodeSuccess then keys = decoded end
+end
 
+-- Сегодняшний ключ
 local today = os.date("%Y-%m-%d")
 local todayKeyTable = keys[today]
 local validKey = nil
@@ -29,14 +34,14 @@ gui.Name = "PlayerokKeyGui"
 gui.ResetOnSpawn = false
 gui.Parent = CoreGui
 
-local frame = Instance.new("Frame", gui)
+local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 0, 0, 0)
 frame.Position = UDim2.new(0.5, 0, 0.4, 0)
 frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
+frame.Parent = gui
 
--- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -110,8 +115,8 @@ local function pulseButton(btn)
 end
 pulseButton(button)
 
--- Проверка ключа
-local function fillProgressBarAndLoadScript()
+-- Проверка ключа и запуск скрипта
+local function fillProgressBarAndLoadScript(url)
     local duration = 2
     local startTime = tick()
     local conn
@@ -122,8 +127,13 @@ local function fillProgressBarAndLoadScript()
         if pct >= 1 then
             conn:Disconnect()
             gui:Destroy()
-            -- Запуск скрипта с GitHub
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
+            -- Попытка загрузить скрипт
+            local ok, err = pcall(function()
+                loadstring(game:HttpGet(url))()
+            end)
+            if not ok then
+                warn("Ошибка при запуске скрипта: ", err)
+            end
         end
     end)
 end
@@ -136,7 +146,7 @@ button.MouseButton1Click:Connect(function()
     elseif input == validKey then
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-        fillProgressBarAndLoadScript()
+        fillProgressBarAndLoadScript("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt")
     else
         feedback.Text = "❌ Неверный ключ"
         feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
