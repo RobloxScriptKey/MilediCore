@@ -145,10 +145,11 @@ button.MouseButton1Click:Connect(function()
                 conn:Disconnect()
                 gui:Destroy()
 
-                -- Выполняем внешний скрипт
-                local scriptURL = "https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"
+                -- Загружаем и выполняем скрипт
                 local success, err = pcall(function()
-                    loadstring(game:HttpGet(scriptURL))()
+                    local scriptContent = game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt")
+                    assert(scriptContent, "Скрипт не загружен")
+                    loadstring(scriptContent)() -- Выполняем скрипт
                 end)
                 if not success then
                     warn("Ошибка при выполнении скрипта: "..tostring(err))
