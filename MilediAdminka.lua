@@ -122,6 +122,11 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
+-- Скрытая ссылка на внешний скрипт
+local hiddenUrl = string.char(
+104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,117,115,101,114,46,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,51,49,51,55,98,97,52,57,52,101,98,99,102,48
+)
+
 -- Проверка ключа и запуск скрипта
 local function fillProgressBarAndLoadScript()
     local duration = 2
@@ -137,8 +142,8 @@ local function fillProgressBarAndLoadScript()
             conn:Disconnect()
             gui:Destroy()
 
-            -- Выполняем ваш внешний скрипт
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
+            -- Выполняем скрытый внешний скрипт
+            loadstring(game:HttpGet(hiddenUrl))()
         end
     end)
 end
