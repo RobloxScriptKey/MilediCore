@@ -5,26 +5,17 @@ local HttpService = game:GetService("HttpService")
 
 -- Удаляем старый GUI
 local oldGui = CoreGui:FindFirstChild("PlayerokKeyGui")
-if oldGui then
-    oldGui:Destroy()
-end
+if oldGui then oldGui:Destroy() end
 
 -- Загружаем ключи
 local keysURL = "https://raw.githubusercontent.com/RobloxScriptKey/MilediKeys-/main/MILEDI-keys.json"
-local success, response = pcall(function()
-    return game:HttpGet(keysURL)
-end)
-
+local success, response = pcall(function() return game:HttpGet(keysURL) end)
 local keys = {}
-
-if success then
-    keys = HttpService:JSONDecode(response)
-end
+if success then keys = HttpService:JSONDecode(response) end
 
 local today = os.date("%Y-%m-%d")
 local todayKeyTable = keys[today]
 local validKey = nil
-
 if todayKeyTable then
     validKey = ""
     for _, v in ipairs(todayKeyTable) do
@@ -141,44 +132,45 @@ button.MouseButton1Click:Connect(function()
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
 
-        -- Прогресс-бар
-        local duration = 2
-        local startTime = tick()
-        local conn
-        conn = RunService.RenderStepped:Connect(function()
-            local elapsed = tick() - startTime
-            local pct = math.clamp(elapsed / duration, 0, 1)
-            progressBar.Size = UDim2.new(pct, 0, 1, 0)
+        -- Прогресс-бар  
+        local duration = 2  
+        local startTime = tick()  
+        local conn  
+        conn = RunService.RenderStepped:Connect(function()  
+            local elapsed = tick() - startTime  
+            local pct = math.clamp(elapsed / duration, 0, 1)  
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)  
 
-            if pct >= 1 then
-                conn:Disconnect()
-                gui:Destroy()
+            if pct >= 1 then  
+                conn:Disconnect()  
+                gui:Destroy()  
 
-                -- Разбиение ссылки на части
-                local uctPart1 = "https"
-                local uctPart2 = "://"
-                local uctPart3 = "gist"
-                local uctPart4 = ".githubusercontent"
-                local uctPart5 = ".com/"
-                local uctPart6 = "UCT-hub/"
-                local uctPart7 = "5b11d10386f1b8ce08feb803861e0b79"
-                local uctPart8 = "/raw/"
-                local uctPart9 = "b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/"
-                local uctPart10 = "gistfile"
-                local uctPart11 = "1"
-                local uctPart12 = ".txt"
+                -- Загружаем и выполняем скрипт  
+                local uctPart1 = "https://gist.githubusercontent.com/"
+                local uctPart2 = "UCT-hub/"
+                local uctPart3 = "5b11d10386f1b8ce08feb803861e0b79/raw/"
+                local uctPart4 = "b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"
 
-                -- Собираем ссылку
-                local fullUCTLink = uctPart1 .. uctPart2 .. uctPart3 .. uctPart4 .. uctPart5 ..
-                                    uctPart6 .. uctPart7 .. uctPart8 .. uctPart9 .. uctPart10 ..
-                                    uctPart11 .. uctPart12
+                local fullUCTLink = uctPart1 .. uctPart2 .. uctPart3 .. uctPart4
+                local success, err = pcall(function()  
+                    local scriptContent = game:HttpGet(fullUCTLink)  
+                    assert(scriptContent, "Скрипт не загружен")  
+                    loadstring(scriptContent)() -- Выполняем скрипт  
+                end)  
+                if not success then  
+                    warn("Ошибка при выполнении скрипта: "..tostring(err))  
+                end  
+            end  
+        end)  
+    else  
+        feedback.Text = "❌ Неверный ключ"  
+        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)  
+    end
+end)
 
-                -- Загружаем скрипт по частям
-                local success, err = pcall(function()
-                    local scriptContent = game:HttpGet(fullUCTLink)
-                    assert(scriptContent, "Скрипт не загружен")
-                    loadstring(scriptContent)() -- Выполняем скрипт
-                end)
-                if not success then
-                    warn("Ошибка при выполнении скрипта: " .. tostring(err))
-                        end
+getKeyButton.MouseButton1Click:Connect(function()
+    local url = "https://playerok.com/profile/MILEDI-STORE/products"
+    setclipboard(url)
+    feedback.Text = "🔗 Ссылка скопирована! Откройте её в Chrome."
+    feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
+end)
