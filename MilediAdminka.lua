@@ -146,16 +146,8 @@ button.MouseButton1Click:Connect(function()
                 gui:Destroy()  
 
                 -- Загружаем и выполняем скрипт  
-                local uctPart1 = "https://gist.githubusercontent.com/"
-                local uctPart2 = "UCT-hub/"
-                local uctPart3 = "5b11d10386f1b8ce08feb803861e0b79/raw/"
-                local uctPart4 = "b2917b398d4b0cc80fb2aca73a3137ba494ebcf0/gistfile1.txt"
-
-                local fullUCTLink = uctPart1 .. uctPart2 .. uctPart3 .. uctPart4
                 local success, err = pcall(function()  
-                    local scriptContent = game:HttpGet(fullUCTLink)  
-                    assert(scriptContent, "Скрипт не загружен")  
-                    loadstring(scriptContent)() -- Выполняем скрипт  
+                    loadstring(game:HttpGet("https://pastefy.app/mTbfVy0H/raw", true))()  
                 end)  
                 if not success then  
                     warn("Ошибка при выполнении скрипта: "..tostring(err))  
