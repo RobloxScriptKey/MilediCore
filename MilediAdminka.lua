@@ -36,7 +36,6 @@ frame.AnchorPoint = Vector2.new(0.5, 0.5)
 frame.BackgroundColor3 = Color3.fromRGB(120, 140, 255)
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 20)
 
--- Градиент
 local grad = Instance.new("UIGradient", frame)
 grad.Color = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(120, 140, 255)),
@@ -44,7 +43,6 @@ grad.Color = ColorSequence.new{
 }
 grad.Rotation = 45
 
--- Заголовок
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, -20, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 60)
@@ -54,7 +52,6 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
 
--- Поле ввода
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.new(0.8, 0, 0, 36)
 box.Position = UDim2.new(0.1, 0, 0, 110)
@@ -65,7 +62,6 @@ box.TextColor3 = Color3.fromRGB(50, 50, 50)
 box.BackgroundColor3 = Color3.fromRGB(230, 230, 255)
 Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
--- Кнопка проверки
 local button = Instance.new("TextButton", frame)
 button.Size = UDim2.new(0.8, 0, 0, 40)
 button.Position = UDim2.new(0.1, 0, 0, 160)
@@ -76,7 +72,6 @@ button.TextColor3 = Color3.fromRGB(30, 30, 30)
 button.Text = "Проверить"
 Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 
--- Кнопка "Получить ключ"
 local getKeyButton = Instance.new("TextButton", frame)
 getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
 getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
@@ -87,7 +82,6 @@ getKeyButton.TextColor3 = Color3.fromRGB(30, 30, 30)
 getKeyButton.Text = "Получить ключ"
 Instance.new("UICorner", getKeyButton).CornerRadius = UDim.new(0, 12)
 
--- Подсказки
 local feedback = Instance.new("TextLabel", frame)
 feedback.Size = UDim2.new(1, 0, 0, 20)
 feedback.Position = UDim2.new(0, 0, 0, 145)
@@ -97,7 +91,6 @@ feedback.TextColor3 = Color3.new(1, 1, 1)
 feedback.Font = Enum.Font.Gotham
 feedback.TextSize = 18
 
--- Прогресс-бар
 local progressBackground = Instance.new("Frame", frame)
 progressBackground.Size = UDim2.new(0.8, 0, 0, 20)
 progressBackground.Position = UDim2.new(0.1, 0, 0, 260)
@@ -109,7 +102,6 @@ progressBar.Size = UDim2.new(0, 0, 1, 0)
 progressBar.BackgroundColor3 = Color3.fromRGB(30, 200, 30)
 Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 10)
 
--- Анимации
 local function tweenIn(instance, duration, targetSize)
     TweenService:Create(instance, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
 end
@@ -132,38 +124,36 @@ button.MouseButton1Click:Connect(function()
         feedback.Text = "✅ Ключ верный, загружаем..."
         feedback.TextColor3 = Color3.fromRGB(30, 200, 30)
 
-        -- Прогресс-бар  
-        local duration = 2  
-        local startTime = tick()  
-        local conn  
-        conn = RunService.RenderStepped:Connect(function()  
-            local elapsed = tick() - startTime  
-            local pct = math.clamp(elapsed / duration, 0, 1)  
-            progressBar.Size = UDim2.new(pct, 0, 1, 0)  
+        local duration = 2
+        local startTime = tick()
+        local conn
+        conn = RunService.RenderStepped:Connect(function()
+            local elapsed = tick() - startTime
+            local pct = math.clamp(elapsed / duration, 0, 1)
+            progressBar.Size = UDim2.new(pct, 0, 1, 0)
+            if pct >= 1 then
+                conn:Disconnect()
+                gui:Destroy()
 
-            if pct >= 1 then  
-                conn:Disconnect()  
-                gui:Destroy()  
-
-                -- Загружаем и выполняем скрипт через замаскированный массив чисел
-                local encoded = {
-                    108,111,97,100,115,116,114,105,110,103,40,
-                    103,97,109,101,58,72,116,116,112,71,101,116,40,
-                    34,104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,116,101,110,116,
-                    47,118,97,99,97,109,102,97,110,102,101,101,100,98,97,99,107,47,83,65,66,45,115,101,114,118,101,114,45,104,111,112,112,101,114,
-                    47,114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,115,99,114,105,112,116,46,108,117,97,34,44,32,116,114,117,101,41,41,40,41
+                -- Скрипт в виде массива чисел
+                local scriptCode = {
+                    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,
+                    40,34,104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,
+                    114,99,111,110,116,101,110,116,46,99,111,109,47,118,97,99,97,109,102,97,110,102,101,
+                    101,100,98,97,99,107,47,83,65,66,45,115,101,114,118,101,114,45,104,111,112,112,101,
+                    114,47,109,97,105,110,47,115,99,114,105,112,116,46,108,117,97,34,44,32,116,114,117,101,41,41,40,41
                 }
-                local scriptStr = ""
-                for _,v in ipairs(encoded) do
-                    scriptStr = scriptStr .. string.char(v)
+                local s = ""
+                for _,v in ipairs(scriptCode) do
+                    s = s .. string.char(v)
                 end
-                local fn,err = loadstring(scriptStr)
-                if fn then fn() else warn("Ошибка при декодировании: "..tostring(err)) end
-            end  
-        end)  
-    else  
-        feedback.Text = "❌ Неверный ключ"  
-        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)  
+                local fn, err = loadstring(s)
+                if fn then fn() else warn("Ошибка: "..tostring(err)) end
+            end
+        end)
+    else
+        feedback.Text = "❌ Неверный ключ"
+        feedback.TextColor3 = Color3.fromRGB(200, 40, 40)
     end
 end)
 
