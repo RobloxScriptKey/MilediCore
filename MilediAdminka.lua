@@ -49,9 +49,20 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
 
+-- Добавляем новый текст под заголовком
+local developerLabel = Instance.new("TextLabel", frame)
+developerLabel.Size = UDim2.new(1, -20, 0, 30)
+developerLabel.Position = UDim2.new(0, 10, 0, 100)
+developerLabel.BackgroundTransparency = 1
+developerLabel.Text = "Разработчик в Playerok : MILEDI STORE🔰"
+developerLabel.TextColor3 = Color3.new(1, 1, 1)
+developerLabel.Font = Enum.Font.Gotham
+developerLabel.TextSize = 18
+developerLabel.TextXAlignment = Enum.TextXAlignment.Left
+
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.new(0.8, 0, 0, 36)
-box.Position = UDim2.new(0.1, 0, 0, 110)
+box.Position = UDim2.new(0.1, 0, 0, 140)
 box.PlaceholderText = "Вставьте ключ..."
 box.Font = Enum.Font.Gotham
 box.TextSize = 20
@@ -61,7 +72,7 @@ Instance.new("UICorner", box).CornerRadius = UDim.new(0, 12)
 
 local button = Instance.new("TextButton", frame)
 button.Size = UDim2.new(0.8, 0, 0, 40)
-button.Position = UDim2.new(0.1, 0, 0, 160)
+button.Position = UDim2.new(0.1, 0, 0, 190)
 button.BackgroundColor3 = Color3.fromRGB(160, 200, 255)
 button.Font = Enum.Font.GothamBold
 button.TextSize = 20
@@ -71,7 +82,7 @@ Instance.new("UICorner", button).CornerRadius = UDim.new(0, 12)
 
 local getKeyButton = Instance.new("TextButton", frame)
 getKeyButton.Size = UDim2.new(0.8, 0, 0, 40)
-getKeyButton.Position = UDim2.new(0.1, 0, 0, 210)
+getKeyButton.Position = UDim2.new(0.1, 0, 0, 240)
 getKeyButton.BackgroundColor3 = Color3.fromRGB(100, 200, 255)
 getKeyButton.Font = Enum.Font.GothamBold
 getKeyButton.TextSize = 20
@@ -81,7 +92,7 @@ Instance.new("UICorner", getKeyButton).CornerRadius = UDim.new(0, 12)
 
 local feedback = Instance.new("TextLabel", frame)
 feedback.Size = UDim2.new(1, 0, 0, 20)
-feedback.Position = UDim2.new(0, 0, 0, 145)
+feedback.Position = UDim2.new(0, 0, 0, 180)
 feedback.BackgroundTransparency = 1
 feedback.Text = ""
 feedback.TextColor3 = Color3.new(1, 1, 1)
@@ -90,7 +101,7 @@ feedback.TextSize = 18
 
 local progressBackground = Instance.new("Frame", frame)
 progressBackground.Size = UDim2.new(0.8, 0, 0, 20)
-progressBackground.Position = UDim2.new(0.1, 0, 0, 260)
+progressBackground.Position = UDim2.new(0.1, 0, 0, 290)
 progressBackground.BackgroundColor3 = Color3.fromRGB(200, 200, 255)
 Instance.new("UICorner", progressBackground).CornerRadius = UDim.new(0, 10)
 
@@ -102,7 +113,7 @@ Instance.new("UICorner", progressBar).CornerRadius = UDim.new(0, 10)
 local function tweenIn(instance, duration, targetSize)
     TweenService:Create(instance, TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize}):Play()
 end
-tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 320))
+tweenIn(frame, 0.5, UDim2.new(0, 400, 0, 340))
 
 local function pulseButton(btn)
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
